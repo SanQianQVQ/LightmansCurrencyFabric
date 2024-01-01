@@ -1,0 +1,18 @@
+{
+  "type": "lightmanscurrency:crafting_wallet_upgrade",
+  "group": "wallet_upgrades",
+  "ingredients": [
+    {
+      "item": "lightmanscurrency:wallet_emerald"
+    },
+    {
+      "tag": "c:diamonds"
+    },
+    {
+      "tag": "c:netherite_ingots"
+    }
+  ],
+  "result": {
+    "item": "lightmanscurrency:wallet_netherite"
+  }
+}

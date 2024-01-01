@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "tag": "c:iron_ingots"
+  },
+  "base": {
+    "item": "minecraft:clock"
+  },
+  "result": {
+    "item": "lightmanscurrency:speed_upgrade_1"
+  },
+  "template": {
+    "item": "lightmanscurrency:upgrade_smithing_template"
+  }
+}

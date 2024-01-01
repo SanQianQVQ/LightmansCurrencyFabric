@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "wallet_crafting",
+  "ingredients": [{
+      "tag": "c:leather"
+  },{
+      "tag": "c:copper_ingots"
+  },{
+      "tag": "c:leather"
+  }],
+  "result": {
+    "item": "lightmanscurrency:wallet_copper"
+  }
+}

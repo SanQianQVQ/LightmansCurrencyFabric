@@ -12,6 +12,7 @@ import io.github.lightman314.lightmanscurrency.common.menu.wallet.WalletMenuBase
 import io.github.lightman314.lightmanscurrency.common.money.CoinValue;
 import io.github.lightman314.lightmanscurrency.common.money.MoneyUtil;
 import io.github.lightman314.lightmanscurrency.common.money.wallet.WalletHandler;
+import io.github.lightman314.lightmanscurrency.integration.trinketsapi.LCTrinketsAPI;
 import io.github.lightman314.lightmanscurrency.network.client.messages.data.SMessageUpdateClientWallet;
 import io.github.lightman314.lightmanscurrency.util.MathUtil;
 import net.minecraft.screen.ScreenTexts;
@@ -201,14 +202,34 @@ public class WalletItem extends Item{
 			//Open the UI
 			if(walletSlot >= 0)
 			{
-				
-				if(player.isSneaking()/* && (!LightmansCurrency.isCuriosValid(player))*/)
+				// Only allow shift+right-click equipping when Trinkets API is active
+				// When Trinkets is disabled, prevent right-click equipping to avoid conflicts
+				if(player.isSneaking() && LCTrinketsAPI.isActive())
 				{
 					AtomicBoolean equippedWallet = new AtomicBoolean(false);
 					WalletHandler walletHandler = WalletHandler.getWallet(player);
 					if(walletHandler.getWallet().isEmpty())
 					{
 						walletHandler.setWallet(wallet);
+						player.setStackInHand(hand, ItemStack.EMPTY);
+						//Manually sync the equipped wallet so that the client container will initialize with the correct number of inventory slots
+						new SMessageUpdateClientWallet(player.getUuid(), walletHandler).sendToAll();
+						walletHandler.clean();
+						//Flag the interaction as a success so that the wallet menu will open with the wallet in the correct slot.
+						equippedWallet.set(true);
+					}
+					if(equippedWallet.get())
+						walletSlot = -1;
+				}
+				else if(player.isSneaking() && !LCTrinketsAPI.isActive())
+				{
+					// When Trinkets is disabled, equip wallet using shift+right-click but only to built-in slot
+					AtomicBoolean equippedWallet = new AtomicBoolean(false);
+					WalletHandler walletHandler = WalletHandler.getWallet(player);
+					if(walletHandler.getWallet().isEmpty())
+					{
+						// Force use built-in wallet system to avoid Trinkets conflicts
+						walletHandler.setWalletBuiltIn(wallet);
 						player.setStackInHand(hand, ItemStack.EMPTY);
 						//Manually sync the equipped wallet so that the client container will initialize with the correct number of inventory slots
 						new SMessageUpdateClientWallet(player.getUuid(), walletHandler).sendToAll();

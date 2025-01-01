@@ -15,6 +15,7 @@ import io.github.lightman314.lightmanscurrency.common.menu.slots.WalletSlot;
 import io.github.lightman314.lightmanscurrency.common.money.wallet.WalletHandler;
 import io.github.lightman314.lightmanscurrency.integration.trinketsapi.LCTrinketsAPI;
 import io.github.lightman314.lightmanscurrency.network.server.messages.wallet.CMessageOpenWalletMenu;
+import io.github.lightman314.lightmanscurrency.network.server.messages.wallet.CMessageEquipWalletFromHand;
 import io.github.lightman314.lightmanscurrency.network.server.messages.walletslot.CMessageSetWalletVisible;
 import io.github.lightman314.lightmanscurrency.network.server.messages.walletslot.CMessageWalletInteraction;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -47,10 +48,13 @@ public class ClientEventListeners {
     public static final Identifier WALLET_SLOT_TEXTURE = new Identifier(LightmansCurrency.MODID, "textures/gui/container/wallet_slot.png");
 
     public static final KeyBinding KEY_WALLET = new KeyBinding("key.wallet", GLFW.GLFW_KEY_V, KeyBinding.INVENTORY_CATEGORY);
+    public static final KeyBinding KEY_EQUIP_WALLET = new KeyBinding("key.equip_wallet", GLFW.GLFW_KEY_B, KeyBinding.INVENTORY_CATEGORY);
 
     public static void init() {
 
-        try{ KeyBindingHelper.registerKeyBinding(KEY_WALLET);
+        try{ 
+            KeyBindingHelper.registerKeyBinding(KEY_WALLET);
+            KeyBindingHelper.registerKeyBinding(KEY_EQUIP_WALLET);
         } catch(Throwable ignored) {}
 
         ClientTickEvents.END_CLIENT_TICK.register(ClientEventListeners::onClientTick);
@@ -78,6 +82,18 @@ public class ClientEventListeners {
                 client.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1.25f + player.getWorld().random.nextFloat() * 0.5f, 0.75f));
                 if(!WalletItem.isEmpty(walletStack))
                     client.getSoundManager().play(PositionedSoundInstance.master(ModSounds.COINS_CLINKING, 1f, 0.4f));
+            }
+        }
+        
+        // Handle wallet equipping key - only when Trinkets is disabled
+        if(KEY_EQUIP_WALLET.wasPressed() && client.player != null && client.currentScreen == null && !LCTrinketsAPI.isActive())
+        {
+            ClientPlayerEntity player = client.player;
+            ItemStack heldItem = player.getMainHandStack();
+            if(WalletItem.isWallet(heldItem))
+            {
+                // Send message to equip wallet from main hand
+                new CMessageEquipWalletFromHand().sendToServer();
             }
         }
     }

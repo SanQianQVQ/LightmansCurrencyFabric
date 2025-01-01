@@ -52,6 +52,18 @@ public class WalletHandler{
     }
 
     /**
+     * Forces the wallet to be set to the built-in slot, bypassing Trinkets integration.
+     * Used when Trinkets integration is disabled to prevent conflicts.
+     */
+    public void setWalletBuiltIn(ItemStack walletStack) {
+        //Force use built-in wallet system only
+        this.invalidated = false;
+        this.wallet = walletStack;
+        if(!(walletStack.getItem() instanceof WalletItem) && !walletStack.isEmpty())
+            LightmansCurrency.LogWarning("Equipped a non-wallet to the players wallet slot.");
+    }
+
+    /**
      * Whether the wallet should be rendered
      */
     public boolean visible() {

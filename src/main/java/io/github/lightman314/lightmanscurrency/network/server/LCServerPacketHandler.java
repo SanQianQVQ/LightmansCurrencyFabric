@@ -16,6 +16,7 @@ import io.github.lightman314.lightmanscurrency.network.server.messages.team.*;
 import io.github.lightman314.lightmanscurrency.network.server.messages.ticket_machine.*;
 import io.github.lightman314.lightmanscurrency.network.server.messages.trader.*;
 import io.github.lightman314.lightmanscurrency.network.server.messages.wallet.*;
+import io.github.lightman314.lightmanscurrency.network.server.messages.wallet.CMessageEquipWalletFromHand;
 import io.github.lightman314.lightmanscurrency.network.server.messages.traderinterface.*;
 import io.github.lightman314.lightmanscurrency.network.server.messages.walletslot.*;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -91,6 +92,7 @@ public class LCServerPacketHandler implements PlayChannelHandler {
 		this.registerPacketType(CMessageWalletToggleAutoExchange.PACKET_ID, CMessageWalletToggleAutoExchange::handle);
 		this.registerPacketType(CMessageWalletQuickCollect.PACKET_ID, CMessageWalletQuickCollect::handle);
 		this.registerPacketType(CPacketChestQuickCollect.PACKET_ID, CPacketChestQuickCollect::handle);
+		this.registerPacketType(CMessageEquipWalletFromHand.PACKET_ID, CMessageEquipWalletFromHand::handle);
 
 		//Wallet Slot
 		this.registerPacketType(CMessageSetWalletVisible.PACKET_ID, CMessageSetWalletVisible::handle);
